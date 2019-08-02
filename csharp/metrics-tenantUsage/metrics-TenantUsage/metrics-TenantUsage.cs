@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using IonicAPISample;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Linq;
@@ -7,116 +8,194 @@ namespace TenantMetrics
 {
     class TenantUsage
     {
+        public class IonicMetricsQueryParameters
+        {
+            public string metric { get; set; }
+            public string bucket { get; set; }
+            public string start { get; set; }
+            public string end { get; set; }
+            public string datatype { get; set; }
+            public string subdatatype { get; set; }
+            public string count { get; set; }
+            public string fill { get; set; }
+        }
+
         public class ResultPair
         {
-            public String subDataType;
-            public int itemCount;
+            public String subdatatype;
+            public int item_count;
         }
 
         static void Main(string[] args)
         {
-            String apiHost = "** TODO: SET THIS **";
-            String tenantId = "** TODO: SET THIS **";
-            String apiToken = "** TODO: SET THIS **";
-
-            // Setup metrics request #1
+            // Load all needed info from user's config file
             //
-            var client = new RestClient($"https://{apiHost}/{tenantId}/metrics?metric=req-volume&start=20190401-00:00&end=20190531-00:00&bucket=1d&datatype=key_requests&subdatatype=create,permit,deny,create-error,modify,modify-error&count=true");
-            var request = new RestRequest(Method.GET);
+            if (!SampleConfig.LoadConfig())
+            {
+                Console.WriteLine($"Error loading config from:  {SampleConfig.ConfigFile}");
+                Console.WriteLine();
 
-            // Auto-generated Postman headers - not required...
-            //request.AddHeader("cache-control", "no-cache");
-            //request.AddHeader("Connection", "keep-alive");
-            //request.AddHeader("Accept-Encoding", "gzip, deflate");
-            //request.AddHeader("Cookie", "crowd.token_key=w1xsCbnfVYv7IvJ8HKpFBQ00");
-            //request.AddHeader("Host", $"{apiHost}");
-            //request.AddHeader("Cache-Control", "no-cache");
-            //request.AddHeader("Accept", "*/*");
-            request.AddHeader("Authorization", $"Bearer {apiToken}");
+                // Keep console app open to see results
+                Console.WriteLine("\nPress return to exit.");
+                Console.ReadKey();
+
+            }
+
+            // Create (re-usable) object for Metrics API requests - set values for request #1
+            //
+            var metricRequest = new IonicMetricsQueryParameters
+            {
+                metric = "req-volume",
+                start = "20190401-00:00",
+                end = "20190531-00:00",
+                bucket = "1d",
+                count = "true",
+                datatype = "key_requests",
+                subdatatype = "create,permit,deny,create-error,modify,modify-error",
+            };
+
+            //
+            // Metrics request #1 - key counts
+            //
+            var client = new RestClient($"{SampleConfig.APIURL}/{SampleConfig.TenantID}/metrics");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Authorization", SampleConfig.AuthHeader);
+            request.AddObject(metricRequest);
 
             // REST:  metrics request #1
             //
             IRestResponse response = client.Execute(request);
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine();
+
+                // Keep console app open to see results
+                Console.WriteLine("\nPress return to exit.");
+                Console.ReadKey();
+            }
 
             JObject json = JObject.Parse(response.Content);
 
-            // Accumulate key_request results for output
+            // Accumulate key_request results for desired output
             //
             var subs = 
                 from tc in json["total_count"]
-                select new ResultPair { subDataType = (string)tc["subdatatype"], itemCount = (int)tc["item_count"] };
+                select new ResultPair { subdatatype = (string)tc["subdatatype"], item_count = (int)tc["item_count"] };
             int createCount = 0;
             int createErr = 0;
             int fetchCount = 0;
             int fetchErr = 0;
             foreach (ResultPair res in subs)
             {
-                if (res.subDataType == "create")                // create
+                if (res.subdatatype == "create")                // create
                 { 
-                    createCount += res.itemCount;
+                    createCount += res.item_count;
                 }
-                else if (res.subDataType == "create-error")     // create-error
+                else if (res.subdatatype == "create-error")     // create-error
                 { 
-                    createErr += res.itemCount;
+                    createErr += res.item_count;
                 }
-                else if (res.subDataType.EndsWith("-error"))    // modify-error (and any future -error sub-data types)
+                else if (res.subdatatype.EndsWith("-error"))    // modify-error (and future -error sub-data types)
                 { 
-                    fetchErr += res.itemCount;
+                    fetchErr += res.item_count;
                 }
                 else                                            // permit, deny
                 { 
-                    fetchCount += res.itemCount;
+                    fetchCount += res.item_count;
                 }
             }
 
             // Output
-            //
             Console.WriteLine($"Tenant Metrics");
-            Console.WriteLine($"  Host:    {apiHost}");
-            Console.WriteLine($"  Tenant:  {tenantId}");
-            Console.WriteLine();         // blank line
+            Console.WriteLine($"  Host:    {SampleConfig.APIURL}");
+            Console.WriteLine($"  Tenant:  {SampleConfig.TenantID}");
+            Console.WriteLine();
             Console.WriteLine($"  # key creates:   {createCount + createErr} ({createErr} err)");
             Console.WriteLine($"  # key requests:  {fetchCount + fetchErr} ({fetchErr} err)");
-            Console.WriteLine();         // blank line
+            Console.WriteLine();
 
-            // Diagnostics
+            // Diagnostics - uncomment to show response JSON
             //Console.WriteLine($"JSON: {response.Content}");
-            //Console.WriteLine();         // blank line
+            //Console.WriteLine();
 
-            // Metrics request #2 (# unique users)
+
             //
-            client = new RestClient($"https://{apiHost}/{tenantId}/metrics?metric=uniq-users&start=20190401-00:00&end=20190531-00:00&bucket=1d&count=true");
+            // Metrics request #2 - unique users
+            //
             request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", $"Bearer {apiToken}");
+            request.AddHeader("Authorization", SampleConfig.AuthHeader);
+
+            metricRequest.metric = "uniq-users";
+            metricRequest.datatype = null;
+            metricRequest.subdatatype = null;
+            request.AddObject(metricRequest);
+
             response = client.Execute(request);
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine();
+
+                // Keep console app open to see results
+                Console.WriteLine("\nPress return to exit.");
+                Console.ReadKey();
+            }
 
             json = JObject.Parse(response.Content);
+
             Console.WriteLine($"  # unique users:      {json["total_count"]}");
 
-
-            // Metrics request #3 (# devices enrolled)
             //
-            client = new RestClient($"https://{apiHost}/{tenantId}/metrics?metric=total-devices&start=20190401-00:00&end=20190531-00:00&bucket=1d&count=true");
+            // Metrics request #3 - devices enrolled
+            //
             request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", $"Bearer {apiToken}");
+            request.AddHeader("Authorization", SampleConfig.AuthHeader);
+
+            metricRequest.metric = "total-devices";
+            request.AddObject(metricRequest);
             response = client.Execute(request);
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine();
+
+                // Keep console app open to see results
+                Console.WriteLine("\nPress return to exit.");
+                Console.ReadKey();
+            }
 
             json = JObject.Parse(response.Content);
+
             Console.WriteLine($"  # devices enrolled:  {json["total_count"]}");
 
-            // Metrics request #2 (# unique users)
             //
-            client = new RestClient($"https://{apiHost}/{tenantId}/metrics?metric=uniq-ip&start=20190401-00:00&end=20190531-00:00&bucket=1d&count=true");
+            // Metrics request #4 - unique IP addresses
+            //
             request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", $"Bearer {apiToken}");
+            request.AddHeader("Authorization", SampleConfig.AuthHeader);
+
+            metricRequest.metric = "uniq-ip";
+            request.AddObject(metricRequest);
             response = client.Execute(request);
 
+            response = client.Execute(request);
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine();
+
+                // Keep console app open to see results
+                Console.WriteLine("\nPress return to exit.");
+                Console.ReadKey();
+            }
+
             json = JObject.Parse(response.Content);
+
             Console.WriteLine($"  # unique IPs:        {json["total_count"]}");
-            Console.WriteLine();         // blank line
 
 
-            // Keep console app open
+            // Keep console app open to see results when run from Visual Studio
             Console.WriteLine("\nPress return to exit.");
             Console.ReadKey();
         }
