@@ -34,3 +34,5 @@ _build
 *.pdf
 *.txt
 sample.log
+
+csharp/metrics-tenantUsage/packages/*

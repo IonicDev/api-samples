@@ -1,12 +1,11 @@
 ﻿using System.Resources;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TenantUsage")]
+[assembly: AssemblyTitle("metrics-TenantUsage")]
 [assembly: AssemblyDescription("Demonstrates calling the Ionic Security Metrics API to get tenant usage metrics")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ionic Security")]
