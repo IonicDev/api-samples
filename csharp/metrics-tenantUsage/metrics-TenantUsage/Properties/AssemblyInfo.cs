@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("metrics-TenantUsage")]
 [assembly: AssemblyDescription("Demonstrates calling the Ionic Security Metrics API to get tenant usage metrics")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ionic Security")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCompany("Ionic Security Inc.")]
+[assembly: AssemblyProduct("Ionic REST API Samples")]
+[assembly: AssemblyCopyright("Copyright © 2019 Ionic Security Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguage("en-US")]
+[assembly: NeutralResourcesLanguage("en")]
 

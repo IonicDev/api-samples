@@ -54,10 +54,12 @@ namespace TenantMetrics
                 subdatatype = "create,permit,deny,create-error,modify,modify-error",
             };
 
+            // Setup REST client with endpoint
+            var client = new RestClient($"{SampleConfig.APIURL}/{SampleConfig.TenantID}/metrics");
+
             //
             // Metrics request #1 - key counts
             //
-            var client = new RestClient($"{SampleConfig.APIURL}/{SampleConfig.TenantID}/metrics");
             var request = new RestRequest(Method.GET);
             request.AddHeader("Authorization", SampleConfig.AuthHeader);
             request.AddObject(metricRequest);
@@ -67,7 +69,7 @@ namespace TenantMetrics
             IRestResponse response = client.Execute(request);
             if (!response.IsSuccessful)
             {
-                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine($"Key Counts Error - Response:  {response.Content}");
                 Console.WriteLine();
 
                 // Keep console app open to see results
@@ -111,8 +113,8 @@ namespace TenantMetrics
             Console.WriteLine($"  Host:    {SampleConfig.APIURL}");
             Console.WriteLine($"  Tenant:  {SampleConfig.TenantID}");
             Console.WriteLine();
-            Console.WriteLine($"  # key creates:   {createCount + createErr} ({createErr} err)");
-            Console.WriteLine($"  # key requests:  {fetchCount + fetchErr} ({fetchErr} err)");
+            Console.WriteLine($"  # key creates:   {createCount + createErr} ({createErr} error(s))");
+            Console.WriteLine($"  # key requests:  {fetchCount + fetchErr} ({fetchErr} error(s))");
             Console.WriteLine();
 
             // Diagnostics - uncomment to show response JSON
@@ -134,7 +136,7 @@ namespace TenantMetrics
             response = client.Execute(request);
             if (!response.IsSuccessful)
             {
-                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine($"Unique Users Error - Response:  {response.Content}");
                 Console.WriteLine();
 
                 // Keep console app open to see results
@@ -157,7 +159,7 @@ namespace TenantMetrics
             response = client.Execute(request);
             if (!response.IsSuccessful)
             {
-                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine($"Total Devices Error - Response:  {response.Content}");
                 Console.WriteLine();
 
                 // Keep console app open to see results
@@ -182,7 +184,7 @@ namespace TenantMetrics
             response = client.Execute(request);
             if (!response.IsSuccessful)
             {
-                Console.WriteLine($"Error - Response:  {response.Content}");
+                Console.WriteLine($"Unique IP Addresses Error - Response:  {response.Content}");
                 Console.WriteLine();
 
                 // Keep console app open to see results
