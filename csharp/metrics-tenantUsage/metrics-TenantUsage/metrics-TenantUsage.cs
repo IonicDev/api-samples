@@ -75,6 +75,7 @@ namespace TenantMetrics
                 // Keep console app open to see results
                 Console.WriteLine("\nPress return to exit.");
                 Console.ReadKey();
+                return;
             }
 
             JObject json = JObject.Parse(response.Content);
@@ -142,6 +143,7 @@ namespace TenantMetrics
                 // Keep console app open to see results
                 Console.WriteLine("\nPress return to exit.");
                 Console.ReadKey();
+                return;
             }
 
             json = JObject.Parse(response.Content);
@@ -165,6 +167,7 @@ namespace TenantMetrics
                 // Keep console app open to see results
                 Console.WriteLine("\nPress return to exit.");
                 Console.ReadKey();
+                return;
             }
 
             json = JObject.Parse(response.Content);
@@ -190,6 +193,7 @@ namespace TenantMetrics
                 // Keep console app open to see results
                 Console.WriteLine("\nPress return to exit.");
                 Console.ReadKey();
+                return;
             }
 
             json = JObject.Parse(response.Content);
