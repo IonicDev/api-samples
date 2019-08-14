@@ -2,8 +2,6 @@
  * (c) 2019 Ionic Security Inc.
  * By using this code, I agree to the Terms & Conditions (https://dev.ionic.com/use.html)
  * and the Privacy Policy (https://www.ionic.com/privacy-notice/).
- * 
- * Developed with Ionic Java SDK 2.1.0
  */
 
 package com.ionic.samples.api;
@@ -24,11 +22,15 @@ public class metricsTenantUsage
 {
     public static void main(String[] args)
     {
-        // TODO:  Load settings from config file
-        String cfgApiUrl = "https://deveng-dashboard.in.ionicsecurity.com";
-        String cfgTenantID = "5cb4c9a9c63d3105cffd018a";
-        String authType = "Bearer";
-        String authToken = "NWQyNjViYTIwYmU5NjIwYjI2ZmNmZGI5dkGLqJb7ztP8nB3v6zsvqXuVP+UUGTKMeoWJlS/55oA=";
+        // Load all needed info from user's config file
+        //
+        if (!SampleConfig.LoadConfig())
+        {
+            System.out.println("Error loading config from:  " + SampleConfig.ConfigFile);
+            System.out.println();
+
+            return;
+        }
 
         // Structure with GET properties for Metrics API calls
         //      - initial setup for key_requests metrics
@@ -45,15 +47,14 @@ public class metricsTenantUsage
         // client object for REST calls
         OkHttpClient client = new OkHttpClient();
 
-
         //
         // Metrics request #1 - key counts
         //
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(cfgApiUrl + "/" + cfgTenantID + "/metrics").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         Request request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , "Bearer " + authToken)
+                .addHeader("Authorization" , SampleConfig.AuthHeader)
                 .build();
 
         try (Response response = client.newCall(request).execute())
@@ -91,8 +92,8 @@ public class metricsTenantUsage
             }
 
             System.out.println("Tenant Metrics");
-            System.out.println("  Host:    " + cfgApiUrl);
-            System.out.println("  Tenant:  " + cfgTenantID);
+            System.out.println("  Host:    " + SampleConfig.APIURL);
+            System.out.println("  Tenant:  " + SampleConfig.TenantID);
             System.out.println();
             System.out.printf("  # key creates:   %d (%d error(s))\n", createCount + createErr, createErr);
             System.out.printf("  # key requests:  %d (%d error(s))\n", fetchCount + fetchErr, fetchErr);
@@ -109,12 +110,11 @@ public class metricsTenantUsage
         properties.remove("datatype");
         properties.remove("subdatatype");
 
-        urlBuilder = HttpUrl.parse(cfgApiUrl + "/" + cfgTenantID + "/metrics").newBuilder();
+        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
-
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , "Bearer " + authToken)
+                .addHeader("Authorization" , SampleConfig.AuthHeader)
                 .build();
 
         try (Response response = client.newCall(request).execute())
@@ -141,12 +141,11 @@ public class metricsTenantUsage
         //
         properties.put("metric", "total-devices");
 
-        urlBuilder = HttpUrl.parse(cfgApiUrl + "/" + cfgTenantID + "/metrics").newBuilder();
+        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
-
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , "Bearer " + authToken)
+                .addHeader("Authorization" , SampleConfig.AuthHeader)
                 .build();
 
         try (Response response = client.newCall(request).execute())
@@ -172,10 +171,12 @@ public class metricsTenantUsage
         // Metrics request #3 - unique IP addresses
         //
         properties.put("metric", "uniq-ip");
+
+        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , "Bearer " + authToken)
+                .addHeader("Authorization" , SampleConfig.AuthHeader)
                 .build();
 
         try (Response response = client.newCall(request).execute())
