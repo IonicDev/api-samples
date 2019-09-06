@@ -5,7 +5,7 @@ using System.IO;
 
 namespace IonicAPISample
 {
-    public class SampleConfig
+    public static class SampleConfig
     {
         public static string ConfigFile { get; internal set; }
         public static bool Loaded { get; internal set; }

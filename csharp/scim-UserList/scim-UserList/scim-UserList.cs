@@ -1,15 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
-using System.Linq;
 
+[assembly: CLSCompliant(true)]
 namespace IonicAPISample
 {
     class SCIMUserList
     {
-
-
-
         public class IonicQueryParameters
         {
             public IonicQueryParameters()
@@ -54,22 +51,20 @@ namespace IonicAPISample
             public int? limit { get; set; }
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             // Load all needed info from user's config file
             //
             if (!SampleConfig.LoadConfig())
             {
                 Console.WriteLine($"Error loading config from:  {SampleConfig.ConfigFile}");
-                Console.WriteLine();
 
                 // Keep console app open to see results
-                Console.WriteLine("\nPress return to exit.");
-                Console.ReadKey();
+                ExitWait();
             }
 
             // Output header
-            Console.WriteLine($"User List");
+            Console.WriteLine("User List");
             Console.WriteLine($"  Host:    {SampleConfig.APIURL}");
             Console.WriteLine($"  Tenant:  {SampleConfig.TenantID}");
             Console.WriteLine();
@@ -100,11 +95,9 @@ namespace IonicAPISample
                 if (!response.IsSuccessful)
                 {
                     Console.WriteLine($"List Users ERROR:  Response = {response.Content}");
-                    Console.WriteLine();
 
                     // Keep console app open to see results
-                    Console.WriteLine("\nPress return to exit.");
-                    Console.ReadKey();
+                    ExitWait();
                     return;
                 }
 
@@ -127,7 +120,7 @@ namespace IonicAPISample
                         Console.WriteLine($"[{userIdx}]:  {userObj["id"]} - {userObj["name"]["formatted"]}  {emailList[0]["value"]}");
                     }
                     else
-                    { 
+                    {
                         Console.WriteLine($"[{userIdx}]:  {userObj["id"]} - {userObj["name"]["formatted"]}");
                     }
                     userIdx++;
@@ -155,11 +148,9 @@ namespace IonicAPISample
             {
                 Console.WriteLine("Fetch User ERROR:");
                 Console.WriteLine($"  Response = {response2.Content}");
-                Console.WriteLine();
 
                 // Keep console app open to see results
-                Console.WriteLine("\nPress return to exit.");
-                Console.ReadKey();
+                ExitWait();
                 return;
             }
 
@@ -180,8 +171,13 @@ namespace IonicAPISample
             }
 
             // Keep console app open to see results when run from Visual Studio
-            Console.WriteLine();
-            Console.WriteLine("\nPress return to exit.");
+            ExitWait();
+        }
+
+        public static void ExitWait()
+        {
+            // Prompt, then wait for keypress
+            Console.WriteLine("\nPress key to exit.");
             Console.ReadKey();
         }
     }
