@@ -1,86 +1,149 @@
 package com.ionic.samples.api;
 
-import java.io.FileReader;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.Base64;
 
 import org.ini4j.Ini;
 
-public class SampleConfig
-{
-    public static String ConfigFile = null;
 
-    public static boolean Loaded = false;
-    public static String AuthHeader = null;
+final class SampleConfig {
 
-    public static String APIURL = null;
-    public static String TenantID = null;
+    private SampleConfig() { }
 
-    public static boolean LoadConfig()
-    {
-        Loaded = false;
+    /**
+     * Path to current config file - useful for error reporting.
+     */
+    private static String configFile = null;
+
+    public static String getConfigFile() {
+        return configFile;
+    }
+
+    public static void setConfigFile(final String configFile) {
+        SampleConfig.configFile = configFile;
+    }
+
+    /**
+     * Flag indicating if config information has been successfully loaded.
+     */
+    private static boolean loaded = false;
+
+    public static boolean isLoaded() {
+        return loaded;
+    }
+
+    public static void setLoaded(final boolean loaded) {
+        SampleConfig.loaded = loaded;
+    }
+
+    /**
+     *  String for REST request Authorization header.
+     */
+    private static String authHeader = null;
+
+    public static String getAuthHeader() {
+        return authHeader;
+    }
+
+    public static void setAuthHeader(final String authHeader) {
+        SampleConfig.authHeader = authHeader;
+    }
+    
+    /**
+     * String for REST request API URL base.
+     */
+    private static String apiUrl = null;
+
+    public static String getApiUrl() {
+        return apiUrl;
+    }
+
+    public static void setApiUrl(final String apiUrl) {
+        SampleConfig.apiUrl = apiUrl;
+    }
+    
+    /**
+     * Tenant ID value (fm. config file).
+     */
+    private static String tenantID = null;
+
+    public static String getTenantID() {
+        return tenantID;
+    }
+
+    public static void setTenantID(final String tenantID) {
+        SampleConfig.tenantID = tenantID;
+    }
+    
+    /**
+     * Load all info from IonicAPI.cfg file.
+     * @return - flag indicating if load operation was successful
+     */
+    public static boolean loadConfig() {
+        loaded = false;
 
         // Build path for common API sample config file
         //
-        String userDir = System.getenv("USERPROFILE");
-        ConfigFile = userDir + "/.ionicsecurity/IonicAPI.cfg";
+        final String userDir = System.getenv("USERPROFILE");
+        configFile = userDir + "/.ionicsecurity/IonicAPI.cfg";
 
         try {
-            Ini ini = new Ini(new FileReader(ConfigFile));
+            // Note:  Assuming config file data is ASCII chars...  adjust if needed
+            final Ini ini = new Ini(new InputStreamReader(new FileInputStream(configFile), Charset.forName("US-ASCII")));
 
             // Load tenant data
             //
             Ini.Section section = ini.get("Tenant");
 
-            APIURL = section.get("URL");
-            TenantID = section.get("ID");
-            if (APIURL == null || APIURL.isEmpty() || TenantID == null || TenantID.isEmpty())
-            {
-                return Loaded;
+            apiUrl = section.get("URL");
+            tenantID = section.get("ID");
+            if (apiUrl == null || apiUrl.isEmpty() || tenantID == null || tenantID.isEmpty()) {
+                return loaded;
             }
 
             // Load Auth data & build header string
             //
             section = ini.get("Authorization");
 
-            String AuthType = section.get("Type");
-            if (AuthType == null || AuthType.isEmpty())
-            {
-                AuthType = "Basic";
+            String authType = section.get("Type");
+            if (authType == null || authType.isEmpty()) {
+                authType = "Basic";
             }
 
-            switch (AuthType)
-            {
+            switch (authType) {
                 case "Basic":
-                    String user = section.get("User");
-                    String pwd = section.get("Password");
-                    if (user == null || user.isEmpty() || pwd == null || pwd.isEmpty())
-                    {
-                        return Loaded;
+                    final String user = section.get("User");
+                    final String pwd = section.get("Password");
+                    if (user == null || user.isEmpty() || pwd == null || pwd.isEmpty()) {
+                        return loaded;
                     }
 
-                    String toEncode = user + ":" + pwd;
-                    String encodedString = Base64.getEncoder().encodeToString(toEncode.getBytes());
-                    AuthHeader = "Basic " + encodedString;
+                    final String toEncode = user + ":" + pwd;
+                    final String encodedString = Base64.getEncoder().encodeToString(toEncode.getBytes("US-ASCII"));
+                    authHeader = "Basic " + encodedString;
                     break;
 
                 case "Bearer":
-                    String apiToken = section.get("APIToken");
-                    if (apiToken == null || apiToken.isEmpty())
-                    {
-                        return Loaded;
+                    final String apiToken = section.get("APIToken");
+                    if (apiToken == null || apiToken.isEmpty()) {
+                        return loaded;
                     }
 
-                    AuthHeader = "Bearer " + apiToken;
+                    authHeader = "Bearer " + apiToken;
                     break;
+
+                default:
+                    return loaded;
             }
 
-        }
-        catch (Exception ex) {
-            return Loaded;
+        } catch (Exception ex) {
+            return loaded;
         }
 
-        Loaded = true;
-        return Loaded;
+        loaded = true;
+        return loaded;
     }
 }
 
