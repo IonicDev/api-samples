@@ -50,7 +50,7 @@ final class SampleConfig {
     public static void setAuthHeader(final String authHeader) {
         SampleConfig.authHeader = authHeader;
     }
-    
+
     /**
      * String for REST request API URL base.
      */
@@ -63,7 +63,7 @@ final class SampleConfig {
     public static void setApiUrl(final String apiUrl) {
         SampleConfig.apiUrl = apiUrl;
     }
-    
+
     /**
      * Tenant ID value (fm. config file).
      */
@@ -76,7 +76,7 @@ final class SampleConfig {
     public static void setTenantID(final String tenantID) {
         SampleConfig.tenantID = tenantID;
     }
-    
+
     /**
      * Load all info from IonicAPI.cfg file.
      * @return - flag indicating if load operation was successful
@@ -91,7 +91,8 @@ final class SampleConfig {
 
         try {
             // Note:  Assuming config file data is ASCII chars...  adjust if needed
-            final Ini ini = new Ini(new InputStreamReader(new FileInputStream(configFile), Charset.forName("US-ASCII")));
+            final Ini ini = new Ini(new InputStreamReader(new FileInputStream(configFile),
+                    Charset.forName("US-ASCII")));
 
             // Load tenant data
             //
