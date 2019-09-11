@@ -46,8 +46,8 @@ namespace TenantMetrics
             var metricRequest = new IonicMetricsQueryParameters
             {
                 metric = "req-volume",
-                start = "20190401-00:00",
-                end = "20190531-00:00",
+                start = "20190601-00:00",
+                end = "20190731-00:00",
                 bucket = "1d",
                 count = "true",
                 datatype = "key_requests",
@@ -55,7 +55,7 @@ namespace TenantMetrics
             };
 
             // Setup REST client with endpoint
-            var client = new RestClient($"{SampleConfig.APIURL}/{SampleConfig.TenantID}/metrics");
+            var client = new RestClient($"{SampleConfig.APIURL}/v2/{SampleConfig.TenantID}/metrics");
 
             //
             // Metrics request #1 - key counts
