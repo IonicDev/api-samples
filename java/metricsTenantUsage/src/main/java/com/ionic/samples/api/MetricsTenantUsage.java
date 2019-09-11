@@ -18,15 +18,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class metricsTenantUsage
-{
-    public static void main(String[] args)
-    {
+final class MetricsTenantUsage {
+
+    private MetricsTenantUsage() { }
+
+    public static void main(final String[] args) {
         // Load all needed info from user's config file
         //
-        if (!SampleConfig.LoadConfig())
-        {
-            System.out.println("Error loading config from:  " + SampleConfig.ConfigFile);
+        if (!SampleConfig.loadConfig()) {
+            System.out.println("Error loading config from:  " + SampleConfig.getConfigFile());
             System.out.println();
 
             return;
@@ -35,30 +35,30 @@ public class metricsTenantUsage
         // Structure with GET properties for Metrics API calls
         //      - initial setup for key_requests metrics
         //
-        Map<String, String> properties = new HashMap();
+        final Map<String, String> properties = new HashMap();
         properties.put("metric", "req-volume");
-        properties.put("start", "20190401-00:00");
-        properties.put("end", "20190531-00:00");
+        properties.put("start", "20190601-00:00");
+        properties.put("end", "20190731-00:00");
         properties.put("bucket", "1d");
         properties.put("count", "true");
         properties.put("datatype", "key_requests");
         properties.put("subdatatype", "create,permit,deny,create-error,modify,modify-error");
 
         // client object for REST calls
-        OkHttpClient client = new OkHttpClient();
+        final OkHttpClient client = new OkHttpClient();
 
         //
         // Metrics request #1 - key counts
         //
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/"
+                + SampleConfig.getTenantID() + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         Request request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , SampleConfig.AuthHeader)
+                .addHeader("Authorization", SampleConfig.getAuthHeader())
                 .build();
 
-        try (Response response = client.newCall(request).execute())
-        {
+        try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 System.out.println("Key counts error.  Response:  " + response.body().string());
                 System.out.println();
@@ -67,39 +67,39 @@ public class metricsTenantUsage
             }
 
             // Parse response JSON
-            JSONObject json = new JSONObject(response.body().string());
-            JSONArray countArray = (JSONArray) json.get("total_count");
+            final JSONObject json = new JSONObject(response.body().string());
+            final JSONArray countArray = (JSONArray) json.get("total_count");
 
             int createCount = 0;
             int createErr = 0;
             int fetchCount = 0;
             int fetchErr = 0;
 
-            for (Object obj : countArray) {
-                JSONObject count = (JSONObject) obj;
+            for (final Object obj : countArray) {
+                final JSONObject count = (JSONObject) obj;
 
-                String subdatatype = count.get("subdatatype").toString();
-                int item_count = count.getInt("item_count");
+                final String subdatatype = count.get("subdatatype").toString();
+                final int itemCount = count.getInt("item_count");
 
-                if (subdatatype.equals("create"))
-                    createCount += item_count;
-                else if (subdatatype.equals("create-error"))
-                    createErr += item_count;
-                else if (subdatatype.endsWith("-error"))
-                    fetchErr += item_count;
-                else
-                    fetchCount += item_count;
+                if (subdatatype.equals("create")) {
+                    createCount += itemCount;
+                } else if (subdatatype.equals("create-error")) {
+                    createErr += itemCount;
+                } else if (subdatatype.endsWith("-error")) {
+                    fetchErr += itemCount;
+                } else {
+                    fetchCount += itemCount;
+                }
             }
 
             System.out.println("Tenant Metrics");
-            System.out.println("  Host:    " + SampleConfig.APIURL);
-            System.out.println("  Tenant:  " + SampleConfig.TenantID);
+            System.out.println("  Host:    " + SampleConfig.getApiUrl());
+            System.out.println("  Tenant:  " + SampleConfig.getTenantID());
             System.out.println();
-            System.out.printf("  # key creates:   %d (%d error(s))\n", createCount + createErr, createErr);
-            System.out.printf("  # key requests:  %d (%d error(s))\n", fetchCount + fetchErr, fetchErr);
+            System.out.printf("  # key creates:   %d (%d error(s))%n", createCount + createErr, createErr);
+            System.out.printf("  # key requests:  %d (%d error(s))%n", fetchCount + fetchErr, fetchErr);
             System.out.println();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("Key counts request failure: " + ex.getMessage());
         }
 
@@ -110,15 +110,15 @@ public class metricsTenantUsage
         properties.remove("datatype");
         properties.remove("subdatatype");
 
-        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
+        urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/"
+                + SampleConfig.getTenantID() + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , SampleConfig.AuthHeader)
+                .addHeader("Authorization", SampleConfig.getAuthHeader())
                 .build();
 
-        try (Response response = client.newCall(request).execute())
-        {
+        try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 System.out.println("Unique users error.  Response:  " + response.body().string());
                 System.out.println();
@@ -127,12 +127,11 @@ public class metricsTenantUsage
             }
 
             // Parse response JSON
-            JSONObject json = new JSONObject( response.body().string());
-            Integer total = (Integer)json.get("total_count");
+            final JSONObject json = new JSONObject(response.body().string());
+            final Integer total = (Integer) json.get("total_count");
 
-            System.out.printf("  # unique users:      %d\n", total);
-        }
-        catch (Exception ex) {
+            System.out.printf("  # unique users:      %d%n", total);
+        } catch (Exception ex) {
             System.out.println("Unique users request failure: " + ex.getMessage());
         }
 
@@ -141,15 +140,15 @@ public class metricsTenantUsage
         //
         properties.put("metric", "total-devices");
 
-        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
+        urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/"
+                + SampleConfig.getTenantID() + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , SampleConfig.AuthHeader)
+                .addHeader("Authorization", SampleConfig.getAuthHeader())
                 .build();
 
-        try (Response response = client.newCall(request).execute())
-        {
+        try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 System.out.println("Devices enrolled error.  Response:  " + response.body().string());
                 System.out.println();
@@ -158,12 +157,11 @@ public class metricsTenantUsage
             }
 
             // Parse response JSON
-            JSONObject json = new JSONObject( response.body().string());
-            Integer total = (Integer)json.get("total_count");
+            final JSONObject json = new JSONObject(response.body().string());
+            final Integer total = (Integer) json.get("total_count");
 
-            System.out.printf("  # devices enrolled:  %d\n", total);
-        }
-        catch (Exception ex) {
+            System.out.printf("  # devices enrolled:  %d%n", total);
+        } catch (Exception ex) {
             System.out.println("Devices enrolled request failure: " + ex.getMessage());
         }
 
@@ -172,15 +170,15 @@ public class metricsTenantUsage
         //
         properties.put("metric", "uniq-ip");
 
-        urlBuilder = HttpUrl.parse(SampleConfig.APIURL + "/" + SampleConfig.TenantID + "/metrics").newBuilder();
+        urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/"
+                + SampleConfig.getTenantID() + "/metrics").newBuilder();
         setUrlProperties(urlBuilder, properties);
         request = new Request.Builder()
                 .url(urlBuilder.build().toString())
-                .addHeader("Authorization" , SampleConfig.AuthHeader)
+                .addHeader("Authorization", SampleConfig.getAuthHeader())
                 .build();
 
-        try (Response response = client.newCall(request).execute())
-        {
+        try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 System.out.println("Unique IPs error.  Response:  " + response.body().string());
                 System.out.println();
@@ -189,12 +187,11 @@ public class metricsTenantUsage
             }
 
             // Parse response JSON
-            JSONObject json = new JSONObject( response.body().string());
-            Integer total = (Integer)json.get("total_count");
+            final JSONObject json = new JSONObject(response.body().string());
+            final Integer total = (Integer) json.get("total_count");
 
-            System.out.printf("  # unique IPs:        %d\n", total);
-        }
-        catch (Exception ex) {
+            System.out.printf("  # unique IPs:        %d%n", total);
+        } catch (Exception ex) {
             System.out.println("Unique IPs request failure: " + ex.getMessage());
         }
     }
@@ -202,12 +199,10 @@ public class metricsTenantUsage
     //
     // (Re-)Setup URL builder with collection of properties
     //
-    public static void setUrlProperties(HttpUrl.Builder builder, Map<String, String> properties)
-    {
-        for (String propName : properties.keySet())
-        {
-            builder.removeAllQueryParameters(propName);
-            builder.addQueryParameter(propName, properties.get(propName));
+    public static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
+        for (final Map.Entry<String, String> prop : properties.entrySet()) {
+            builder.removeAllQueryParameters(prop.getKey());
+            builder.addQueryParameter(prop.getKey(), prop.getValue());
         }
     }
 }
