@@ -38,16 +38,19 @@ namespace TenantMetrics
                 // Keep console app open to see results
                 Console.WriteLine("\nPress return to exit.");
                 Console.ReadKey();
-
             }
+
+            // Get dates to set metrics range automatically:  [30 days ago] -> [today]
+            DateTime endDate = DateTime.Now;
+            DateTime startDate = endDate - TimeSpan.FromDays(30);
 
             // Create (re-usable) object for Metrics API requests - set values for request #1
             //
             var metricRequest = new IonicMetricsQueryParameters
             {
                 metric = "req-volume",
-                start = "20190601-00:00",
-                end = "20190731-00:00",
+                start = startDate.ToString("yyyyMMdd-00:00"),   // 20190601-00:00
+                end = endDate.ToString("yyyyMMdd-00:00"),
                 bucket = "1d",
                 count = "true",
                 datatype = "key_requests",
@@ -113,6 +116,7 @@ namespace TenantMetrics
             Console.WriteLine($"Tenant Metrics");
             Console.WriteLine($"  Host:    {SampleConfig.APIURL}");
             Console.WriteLine($"  Tenant:  {SampleConfig.TenantID}");
+            Console.WriteLine($"  Dates:   {startDate.ToString("MM/dd/yyyy")} --> {endDate.ToString("MM/dd/yyyy")}");
             Console.WriteLine();
             Console.WriteLine($"  # key creates:   {createCount + createErr} ({createErr} error(s))");
             Console.WriteLine($"  # key requests:  {fetchCount + fetchErr} ({fetchErr} error(s))");
