@@ -15,6 +15,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +36,23 @@ final class MetricsTenantUsage {
             return;
         }
 
+        // Get current date + 30 days before for metrics range
+        //
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-00:00");
+        Date endDate = new Date();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        cal.add(Calendar.DATE, -30);
+        Date startDate = cal.getTime();
+
         // Structure with GET properties for Metrics API calls
         //      - initial setup for key_requests metrics
         //
         final Map<String, String> properties = new HashMap();
         properties.put("metric", "req-volume");
-        properties.put("start", "20190601-00:00");
-        properties.put("end", "20190731-00:00");
+        properties.put("start", dateFormat.format(startDate));
+        properties.put("end", dateFormat.format(endDate));
         properties.put("bucket", "1d");
         properties.put("count", "true");
         properties.put("datatype", "key_requests");
@@ -92,9 +106,12 @@ final class MetricsTenantUsage {
                 }
             }
 
+            DateFormat displayFmt = new SimpleDateFormat("yyyy/MM/dd");
+
             System.out.println("Tenant Metrics");
             System.out.println("  Host:    " + SampleConfig.getApiUrl());
             System.out.println("  Tenant:  " + SampleConfig.getTenantID());
+            System.out.println("  Dates:   " + displayFmt.format(startDate) + " --> " + displayFmt.format(endDate));
             System.out.println();
             System.out.printf("  # key creates:   %d (%d error(s))%n", createCount + createErr, createErr);
             System.out.printf("  # key requests:  %d (%d error(s))%n", fetchCount + fetchErr, fetchErr);
