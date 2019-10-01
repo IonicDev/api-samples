@@ -82,7 +82,7 @@ final class MetricsTenantUsage {
 
             // Parse response JSON
             final JSONObject json = new JSONObject(response.body().string());
-            final JSONArray countArray = (JSONArray) json.get("total_count");
+            final JSONArray countArray = json.getJSONArray("total_count");
 
             int createCount = 0;
             int createErr = 0;
@@ -92,7 +92,7 @@ final class MetricsTenantUsage {
             for (final Object obj : countArray) {
                 final JSONObject count = (JSONObject) obj;
 
-                final String subdatatype = count.get("subdatatype").toString();
+                final String subdatatype = count.getString("subdatatype");
                 final int itemCount = count.getInt("item_count");
 
                 if (subdatatype.equals("create")) {
@@ -145,7 +145,7 @@ final class MetricsTenantUsage {
 
             // Parse response JSON
             final JSONObject json = new JSONObject(response.body().string());
-            final Integer total = (Integer) json.get("total_count");
+            final int total = json.getInt("total_count");
 
             System.out.printf("  # unique users:      %d%n", total);
         } catch (Exception ex) {
@@ -175,7 +175,7 @@ final class MetricsTenantUsage {
 
             // Parse response JSON
             final JSONObject json = new JSONObject(response.body().string());
-            final Integer total = (Integer) json.get("total_count");
+            final int total = json.getInt("total_count");
 
             System.out.printf("  # devices enrolled:  %d%n", total);
         } catch (Exception ex) {
@@ -183,7 +183,7 @@ final class MetricsTenantUsage {
         }
 
         //
-        // Metrics request #3 - unique IP addresses
+        // Metrics request #4 - unique IP addresses
         //
         properties.put("metric", "uniq-ip");
 
@@ -205,7 +205,7 @@ final class MetricsTenantUsage {
 
             // Parse response JSON
             final JSONObject json = new JSONObject(response.body().string());
-            final Integer total = (Integer) json.get("total_count");
+            final int total = json.getInt("total_count");
 
             System.out.printf("  # unique IPs:        %d%n", total);
         } catch (Exception ex) {
@@ -216,7 +216,7 @@ final class MetricsTenantUsage {
     //
     // (Re-)Setup URL builder with collection of properties
     //
-    public static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
+    private static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
         for (final Map.Entry<String, String> prop : properties.entrySet()) {
             builder.removeAllQueryParameters(prop.getKey());
             builder.addQueryParameter(prop.getKey(), prop.getValue());
