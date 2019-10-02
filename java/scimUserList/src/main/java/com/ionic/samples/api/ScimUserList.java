@@ -77,24 +77,24 @@ final class ScimUserList {
                 // Parse response JSON
                 final JSONObject json = new JSONObject(response.body().string());
 
-                totalUsers = (int) json.get("totalResults");
+                totalUsers = json.getInt("totalResults");
 
-                final JSONArray userList = (JSONArray) json.get("Resources");
-                int userIndex = (int) json.get("startIndex");
+                final JSONArray userList = json.getJSONArray("Resources");
+                int userIndex = json.getInt("startIndex");
                 for (final Object userObj : userList) {
                     final JSONObject user = (JSONObject) userObj;
 
                     // Save last user's ID
-                    lastUserId = (String) user.get("id");
+                    lastUserId = user.getString("id");
 
-                    final JSONArray emailList = (JSONArray) user.get("emails");
+                    final JSONArray emailList = user.getJSONArray("emails");
                     if (emailList != null && emailList.length() > 0) {
-                        System.out.println("[" + userIndex + "]:  " + user.get("id").toString() + " - "
-                                + ((JSONObject) user.get("name")).get("formatted").toString() + " "
-                                + ((JSONObject) emailList.get(0)).get("value").toString());
+                        System.out.println("[" + userIndex + "]:  " + user.getString("id") + " - "
+                                + user.getJSONObject("name").getString("formatted") + " "
+                                + emailList.getJSONObject(0).getString("value"));
                     } else {
                         System.out.println("[" + userIndex + "]:  " + user.get("id").toString() + " - "
-                                + ((JSONObject) user.get("name")).get("formatted").toString());
+                                + user.getJSONObject("name").getString("formatted"));
                     }
 
                     userIndex++;
@@ -131,19 +131,19 @@ final class ScimUserList {
 
             // Output some interesting stuff from user
             System.out.println();
-            final JSONObject name = (JSONObject) json.get("name");
+            final JSONObject name = json.getJSONObject("name");
 
-            System.out.println("First name: " + name.get("givenName"));
-            System.out.println("Last name:  " + name.get("familyName"));
-            System.out.println("Created:    " + ((JSONObject) json.get("meta")).get("created"));
+            System.out.println("First name: " + name.getString("givenName"));
+            System.out.println("Last name:  " + name.getString("familyName"));
+            System.out.println("Created:    " + json.getJSONObject("meta").getString("created"));
 
-            final JSONArray roleList = (JSONArray) json.get("roles");
+            final JSONArray roleList = json.getJSONArray("roles");
             if (roleList != null) {
                 System.out.println("Roles:");
                 for (final Object roleObj : roleList) {
                     final JSONObject role = (JSONObject) roleObj;
 
-                    System.out.println("   " + role.get("value"));
+                    System.out.println("   " + role.getString("value"));
                 }
             }
         } catch (Exception ex) {
@@ -156,7 +156,7 @@ final class ScimUserList {
      * @param builder HTTP URL builder object
      * @param properties Map of properties for URL
      */
-    public static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
+    private static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
         for (final Map.Entry<String, String> prop : properties.entrySet()) {
             builder.removeAllQueryParameters(prop.getKey());
             builder.addQueryParameter(prop.getKey(), prop.getValue());
