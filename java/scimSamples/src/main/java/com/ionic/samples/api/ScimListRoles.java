@@ -11,6 +11,12 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimListRoles.java`
+ *  - Fetches roles based on the defined search parameters
+ *    - If no search parameters are defined all roles will be fetched
+
+*/
 public class ScimListRoles {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

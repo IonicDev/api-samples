@@ -11,6 +11,10 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimCreateGroup.java`
+ *  - Creates an empty sample group with the name "Sample Group"
+*/
 public class ScimCreateGroup {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

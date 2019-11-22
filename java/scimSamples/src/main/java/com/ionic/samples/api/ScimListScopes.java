@@ -12,7 +12,11 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ScimGetScopes {
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimListScopes.java`
+ *  - Fetches and lists all possible Scopes
+*/
+public class ScimListScopes {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file
 		//
@@ -24,12 +28,12 @@ public class ScimGetScopes {
 		}
 		
 		// Output header
-		System.out.println("Get Scopes");
+		System.out.println("List Scopes");
 		System.out.println("  Host:    " + SampleConfig.getApiUrl());
 		System.out.println("  Tenant:  " + SampleConfig.getTenantID());
 		System.out.println();
 		
-		JSONObject response = getScopes();
+		JSONObject response = listScopes();
 		if (response.getInt(HttpRequest.HTTP_STATUS_CODE) == 200) { // Expecting status code 200
 			JSONObject content = response.getJSONObject(HttpRequest.HTTP_RETURN_VALUE);
 			JSONObject scopes = content.getJSONObject("scopes");
@@ -50,7 +54,7 @@ public class ScimGetScopes {
 		}
 	}
 	
-	public static JSONObject getScopes() throws IOException {
+	public static JSONObject listScopes() throws IOException {
 		if (!SampleConfig.isLoaded()) {
 			throw new IOException("Please load config first");
 		}

@@ -11,6 +11,11 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimListUsers.java`
+ *  - Fetches users based on the defined search parameters
+ *    - If no search parameters are defined all users will be fetched
+*/
 public class ScimListUsers {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

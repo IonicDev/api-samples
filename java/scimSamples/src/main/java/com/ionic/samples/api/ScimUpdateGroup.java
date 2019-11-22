@@ -11,6 +11,11 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimUpdateGroup.java`
+ *  - Updates a group object based on the group id
+ *    - and adds an user defined by the user id
+*/
 public class ScimUpdateGroup {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

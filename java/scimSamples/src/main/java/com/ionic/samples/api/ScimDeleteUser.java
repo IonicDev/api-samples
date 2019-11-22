@@ -10,6 +10,10 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimDeleteUser.java`
+ *  - Deletes an user based on the user's id
+*/
 public class ScimDeleteUser {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

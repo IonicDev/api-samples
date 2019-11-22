@@ -1,64 +1,64 @@
 ## Ionic API samples
 
 ### JSON sample files
-`src/com/ionic/samples/api/scim/CreateUser.java`
+`src/main/java/com/ionic/samples/api/scim/ScimCreateUser.java`
  - Creates an sample user with 
    - the name "Sample User"
    - externalId "SampleID"
    - and subject attribute "risk:low"
 
-`src/com/ionic/samples/api/ScimGetUser.java`
+`src/main/java/com/ionic/samples/api/scim/ScimGetUser.java`
  - Fetches an user based on the user id
 
-`src/com/ionic/samples/api/ScimListUsers.java`
+`src/main/java/com/ionic/samples/api/scim/ScimListUsers.java`
  - Fetches users based on the defined search parameters
    - If no search parameters are defined all users will be fetched
 
-`src/com/ionic/samples/api/ScimUpdateUser.java`
+`src/main/java/com/ionic/samples/api/scim/ScimUpdateUser.java`
  - Updates an user object based on the user id
    - removes all subject attributes of type "risk"
    - and adds a subject attribute "risk:high"
 
-`src/com/ionic/samples/api/ScimDeleteUser.java`
+`src/main/java/com/ionic/samples/api/scim/ScimDeleteUser.java`
  - Deletes an user based on the user's id
 
-`src/com/ionic/samples/api/ScimCreateGroup.java`
+`src/main/java/com/ionic/samples/api/scim/ScimCreateGroup.java`
  - Creates an empty sample group with 
    - the name "Sample Group"
 
-`src/com/ionic/samples/api/ScimGetGroup.java`
+`src/main/java/com/ionic/samples/api/scim/ScimGetGroup.java`
  - Fetches a group based on the group id
 
-`src/com/ionic/samples/api/ScimListGroups.java`
+`src/main/java/com/ionic/samples/api/scim/ScimListGroups.java`
  - Fetches groups based on the defined search parameters
    - If no search parameters are defined all groups will be fetched
 
-`src/com/ionic/samples/api/ScimUpdateGroup.java`
+`src/main/java/com/ionic/samples/api/scim/ScimUpdateGroup.java`
  - Updates a group object based on the group id
    - and adds an user defined by the user id
 
-`src/com/ionic/samples/api/ScimDeleteGroup.java`
+`src/main/java/com/ionic/samples/api/scim/ScimDeleteGroup.java`
  - Deletes a group based on the group id
 
-`src/com/ionic/samples/api/ScimGetScopes.java`
+`src/main/java/com/ionic/samples/api/scim/ScimListScopes.java`
  - Fetches and lists all possible Scopes
 
-`src/com/ionic/samples/api/ScimCreateRole.java`
+`src/main/java/com/ionic/samples/api/scim/ScimCreateRole.java`
  - Creates a sample role with
    - the name "Sample Role"
 
-`src/com/ionic/samples/api/ScimGetRole.java`
+`src/main/java/com/ionic/samples/api/scim/ScimGetRole.java`
  - Fetches a role based on the role id
 
-`src/com/ionic/samples/api/ScimListRoles.java`
+`src/main/java/com/ionic/samples/api/scim/ScimListRoles.java`
  - Fetches roles based on the defined search parameters
    - If no search parameters are defined all roles will be fetched
 
-`src/com/ionic/samples/api/ScimUpdateRole.java`
+`src/main/java/com/ionic/samples/api/scim/ScimUpdateRole.java`
  - Updates a role object based on the role id
    - and adds the scope "access:api"
 
-`src/com/ionic/samples/api/ScimDeleteRole.java`
+`src/main/java/com/ionic/samples/api/scim/ScimDeleteRole.java`
  - Deletes a role based on the role id
 
 
@@ -75,7 +75,7 @@
 ### Sample Workflow
 
 Please find a sample workflow in file
-`src/com/ionic/samples/api/SampleWorkflow.java`
+`src/main/java/com/ionic/samples/api/scim/SampleWorkflow.java`
  - First, lists all users
  - Second, creates sample user (subject attribute risk:low)
  - Third, fetches sample user
@@ -88,3 +88,14 @@ Please find a sample workflow in file
  - Tenth, deletes sample group
  - Eleventh, deletes sample user
  - Last, deletes sample role
+
+
+ ### Build and execute the SCIM samples
+
+1. If cloning the SCIM samples from GIT change to the directory 'scimSamples'.  If downloading the zip file, create a directory named 'scimSamples', copy the zip file to this new directory and unzip it.
+
+2. Use the command `mvn package` to build the jar archive target\scimSamples.jar.
+
+3. Use the command `java -cp target\scimSamples.jar <CLASS>` to execute one of the sample workflows.
+For example use `java -cp target\scimSamples.jar com.ionic.samples.api.ScimCreateUser` to execute the create user sample.
+Or use `java -cp target\scimSamples.jar com.ionic.samples.api.ScimListUsers` to execute the list users sample.

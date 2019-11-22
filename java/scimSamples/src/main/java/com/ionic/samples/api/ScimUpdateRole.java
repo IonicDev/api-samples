@@ -10,6 +10,11 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimUpdateRole.java`
+ *  - Updates a role object based on the role id
+ *    - and adds the scope "access:api"
+*/
 public class ScimUpdateRole {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

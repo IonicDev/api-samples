@@ -11,6 +11,10 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimCreateRole.java`
+ *  - Creates a sample role with the name "Sample Role"
+*/
 public class ScimCreateRole {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

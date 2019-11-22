@@ -11,6 +11,11 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimListGroups.java`
+ *  - Fetches groups based on the defined search parameters
+ *    - If no search parameters are defined all groups will be fetched
+*/
 public class ScimListGroups {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

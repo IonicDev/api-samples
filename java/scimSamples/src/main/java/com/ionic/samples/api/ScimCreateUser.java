@@ -11,6 +11,13 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimCreateUser.java`
+ *  - Creates an sample user with
+ *    - the name "Sample User"
+ *    - externalId "SampleID"
+ *    - and subject attribute "risk:low"
+*/
 public class ScimCreateUser {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

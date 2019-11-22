@@ -10,6 +10,10 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimDeleteRole.java`
+ *  - Deletes a role based on the role id
+*/
 public class ScimDeleteRole {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

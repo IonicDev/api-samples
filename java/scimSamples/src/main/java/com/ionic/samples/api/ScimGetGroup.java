@@ -10,6 +10,10 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/ScimGetGroup.java`
+ *  - Fetches a group based on the group id
+*/
 public class ScimGetGroup {
 	public static void main(String[] args) throws IOException {
 		// Load needed info from user's config file

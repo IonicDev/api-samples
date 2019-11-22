@@ -11,6 +11,21 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * `src/main/java/com/ionic/samples/api/scim/SampleWorkflow.java`
+ *  - First, lists all users
+ *  - Second, creates sample user (subject attribute risk:low)
+ *  - Third, fetches sample user
+ *  - Fourth, updates sample user (subject attribute risk:high)
+ *  - Fifth, creates sample group
+ *  - Sixth, updates sample group and adds sample user
+ *  - Seventh, creates sample role
+ *  - Eighth, updates sample role and adds Scope "access:api"
+ *  - Ninth, adds sample role to sample user
+ *  - Tenth, deletes sample group
+ *  - Eleventh, deletes sample user
+ *  - Last, deletes sample role
+*/
 public class SampleWorkflow {
 	public static void main(String[] args) throws IOException {
 		/*
