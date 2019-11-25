@@ -37,3 +37,4 @@ sample.log
 
 csharp/metrics-tenantUsage/packages/*
 csharp/scim-UserList/packages/
+.DS_Store
