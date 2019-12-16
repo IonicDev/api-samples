@@ -1,0 +1,165 @@
+/*
+ * (c) 2019 Ionic Security Inc.
+ * By using this code, I agree to the Terms & Conditions (https://dev.ionic.com/use.html)
+ * and the Privacy Policy (https://www.ionic.com/privacy-notice/).
+ */
+
+package com.ionic.samples.api;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+final class ScimUserList {
+
+    private ScimUserList() { }
+
+    public static void main(final String[] args) {
+        // Load all needed info from user's config file
+        //
+        if (!SampleConfig.loadConfig()) {
+            System.out.println("Error loading config from:  " + SampleConfig.getConfigFile());
+            System.out.println();
+
+            return;
+        }
+
+        // Output header
+        System.out.println("User List");
+        System.out.println("  Host:    " + SampleConfig.getApiUrl());
+        System.out.println("  Tenant:  " + SampleConfig.getTenantID());
+        System.out.println();
+
+        // client object for REST calls
+        final OkHttpClient client = new OkHttpClient();
+
+        // Structure with properties for REST API calls
+        //      - initial setup for List Users call
+        //
+        final Map<String, String> properties = new HashMap();
+        properties.put("attributes", "name,emails");
+        properties.put("startIndex", "1");
+
+        final int count = 50;
+        properties.put("count", String.valueOf(count));
+
+        // Loop to get user list in "pages"
+        int totalUsers = 2;
+        String lastUserId = "";
+        while (Integer.parseInt(properties.get("startIndex")) < totalUsers) {
+            // API call #1:  List Users
+            //
+            final HttpUrl.Builder urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/"
+                    + SampleConfig.getTenantID() + "/scim/Users").newBuilder();
+            setUrlProperties(urlBuilder, properties);
+            final Request request = new Request.Builder()
+                    .url(urlBuilder.build().toString())
+                    .addHeader("Authorization", SampleConfig.getAuthHeader())
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    System.out.println("User List error.  Response:  " + response.body().string());
+                    System.out.println();
+
+                    return;
+                }
+
+                // Parse response JSON
+                final JSONObject json = new JSONObject(response.body().string());
+
+                totalUsers = json.getInt("totalResults");
+
+                final JSONArray userList = json.getJSONArray("Resources");
+                int userIndex = json.getInt("startIndex");
+                for (final Object userObj : userList) {
+                    final JSONObject user = (JSONObject) userObj;
+
+                    // Save last user's ID
+                    lastUserId = user.getString("id");
+
+                    final JSONArray emailList = user.getJSONArray("emails");
+                    if (emailList != null && emailList.length() > 0) {
+                        System.out.println("[" + userIndex + "]:  " + user.getString("id") + " - "
+                                + user.getJSONObject("name").getString("formatted") + " "
+                                + emailList.getJSONObject(0).getString("value"));
+                    } else {
+                        System.out.println("[" + userIndex + "]:  " + user.get("id").toString() + " - "
+                                + user.getJSONObject("name").getString("formatted"));
+                    }
+
+                    userIndex++;
+                }
+            } catch (IOException ex) {
+                System.out.println("User list request failure: " + ex.getMessage());
+                break;
+            }
+
+            // Advance start index by amount of count
+            final int startIndex = Integer.parseInt(properties.get("startIndex")) + count;
+            properties.put("startIndex", String.valueOf(startIndex));
+        }
+
+        // API call #2:  Fetch User
+        //
+        final HttpUrl.Builder urlBuilder = HttpUrl.parse(SampleConfig.getApiUrl() + "/v2/" + SampleConfig.getTenantID()
+                + "/scim/Users/" + lastUserId).newBuilder();
+        final Request request = new Request.Builder()
+                .url(urlBuilder.build().toString())
+                .addHeader("Authorization", SampleConfig.getAuthHeader())
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                System.out.println("Fetch User error.  Response:  " + response.body().string());
+                System.out.println();
+
+                return;
+            }
+
+            // Parse response JSON
+            final JSONObject json = new JSONObject(response.body().string());
+
+            // Output some interesting stuff from user
+            System.out.println();
+            final JSONObject name = json.getJSONObject("name");
+
+            System.out.println("First name: " + name.getString("givenName"));
+            System.out.println("Last name:  " + name.getString("familyName"));
+            System.out.println("Created:    " + json.getJSONObject("meta").getString("created"));
+
+            final JSONArray roleList = json.getJSONArray("roles");
+            if (roleList != null) {
+                System.out.println("Roles:");
+                for (final Object roleObj : roleList) {
+                    final JSONObject role = (JSONObject) roleObj;
+
+                    System.out.println("   " + role.getString("value"));
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Unique users request failure: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * (Re-)Setup URL builder with collection of properties.
+     * @param builder HTTP URL builder object
+     * @param properties Map of properties for URL
+     */
+    private static void setUrlProperties(final HttpUrl.Builder builder, final Map<String, String> properties) {
+        for (final Map.Entry<String, String> prop : properties.entrySet()) {
+            builder.removeAllQueryParameters(prop.getKey());
+            builder.addQueryParameter(prop.getKey(), prop.getValue());
+        }
+    }
+}
