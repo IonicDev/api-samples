@@ -52,11 +52,11 @@ final class SampleConfig {
     public static boolean isSampleDataLoaded() {
         return loadedSampleData;
     }
-    
+
     public static void setSampleDataLoaded(final boolean loadedSampleData) {
         SampleConfig.loadedSampleData = loadedSampleData;
     }
-    
+
     /**
      *  String for REST request Authorization header.
      */
@@ -100,41 +100,41 @@ final class SampleConfig {
      * Sample User ID value (fm. config file).
      */
     private static String sampleUserID = null;
-    
+
     public static String getSampleUserID() {
         return sampleUserID;
     }
-    
+
     public static void setSampleUserID(final String sampleUserID) {
         SampleConfig.sampleUserID = sampleUserID;
     }
-    
+
     /**
      * Sample Group ID value (fm. config file).
      */
     private static String sampleRoleID = null;
-    
+
     public static String getSampleRoleID() {
         return sampleRoleID;
     }
-    
+
     public static void setSampleRoleID(final String sampleRoleID) {
         SampleConfig.sampleRoleID = sampleRoleID;
     }
-    
+
     /**
      * Sample Group ID value (fm. config file).
      */
     private static String sampleGroupID = null;
-    
+
     public static String getSampleGroupID() {
         return sampleGroupID;
     }
-    
+
     public static void setSampleGroupID(final String sampleGroupID) {
         SampleConfig.sampleGroupID = sampleGroupID;
     }
-    
+
     /**
      * Load all info from IonicAPI.cfg file.
      * @return - flag indicating if load operation was successful
@@ -144,7 +144,7 @@ final class SampleConfig {
 
         // Build path for common API sample config file
         //
-        final String userDir = System.getenv("USERPROFILE");
+        final String userDir = System.getProperty("user.home");
         configFile = userDir + "/.ionicsecurity/IonicAPI.cfg";
 
         try {
@@ -196,9 +196,9 @@ final class SampleConfig {
                 default:
                     return loaded;
             }
-            
+
             loaded = true;
-            
+
             // Load optional sample data
             //
             section = ini.get("SampleData");
@@ -211,11 +211,10 @@ final class SampleConfig {
             	sampleRoleID == null || sampleRoleID.isEmpty()) {
                 return loaded;
             }
-            
+
             loadedSampleData = true;
         } catch (Exception ex) {/* empty on purpose */}
-        
+
         return loaded;
     }
 }
-

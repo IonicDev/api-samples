@@ -2,28 +2,28 @@
 
 ### JSON sample files
 `src/main/java/com/ionic/samples/api/scim/ScimCreateUser.java`
- - Creates an sample user with 
+ - Creates a sample user with
    - the name "Sample User"
    - externalId "SampleID"
    - and subject attribute "risk:low"
 
 `src/main/java/com/ionic/samples/api/scim/ScimGetUser.java`
- - Fetches an user based on the user id
+ - Fetches a user based on the user id
 
 `src/main/java/com/ionic/samples/api/scim/ScimListUsers.java`
  - Fetches users based on the defined search parameters
    - If no search parameters are defined all users will be fetched
 
 `src/main/java/com/ionic/samples/api/scim/ScimUpdateUser.java`
- - Updates an user object based on the user id
+ - Updates a user object based on the user id
    - removes all subject attributes of type "risk"
    - and adds a subject attribute "risk:high"
 
 `src/main/java/com/ionic/samples/api/scim/ScimDeleteUser.java`
- - Deletes an user based on the user's id
+ - Deletes a user based on the user's id
 
 `src/main/java/com/ionic/samples/api/scim/ScimCreateGroup.java`
- - Creates an empty sample group with 
+ - Creates an empty sample group with
    - the name "Sample Group"
 
 `src/main/java/com/ionic/samples/api/scim/ScimGetGroup.java`
@@ -68,7 +68,7 @@
    (ex. path = C:\Users\Joe\.ionicsecurity)
 
  - Edit the IonicAPI.cfg with a text editor (ex. Notepad or Wordpad) to have:
-     a. URL for tenant API calls (ex. https://preview-api.ionic.com)
+     a. URL for tenant API calls (ex. https://api.ionic.com)
      b. Tenant ID for your tenant (get 24-char hex value from tenant dashboard URL)
      c. Email & password for tenant user.  Note:  This user _must_ have an API access role in the tenant.
 
