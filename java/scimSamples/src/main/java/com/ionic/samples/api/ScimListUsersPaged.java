@@ -19,9 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-final class ScimUserList {
+final class ScimListUsersPaged {
 
-    private ScimUserList() { }
+    private ScimListUsersPaged() { }
 
     public static void main(final String[] args) {
         // Load all needed info from user's config file
