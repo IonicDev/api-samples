@@ -1,8 +1,6 @@
 # Machina API Samples
 
-To run the API samples  in this repository, you need to have a Machina tenant. Obtaining a
-Machina tenant is done by clicking on *"Start For Free"* on the
-[Machina Developers Portal](https://ionic.com/developers). After your tenant has been created,
+To run the API samples  in this repository, you need to have a Machina tenant. After your tenant has been created,
 you'll be directed to create your device credentials. Depending on the language chosen,
 you might have to install an SDK.  Once you have run *"Hello, World!"*, you're ready for the
 API samples.
@@ -14,7 +12,7 @@ Follow these instructions to setup this file for use by the samples:
 
 1. Copy IonicAPI.cfg to a \.ionicsecurity sub-directory under your Windows or Linux user directory: `C:\Users\Joe\.ionicsecurity` or `~/.ionicsecurity`.
 2. Edit `IonicAPI.cfg` with your favorite text editor to have:
-     a. URL for tenant API calls (ex. https://preview-api.ionic.com)
+     a. URL for tenant API calls (ex. https://api.ionic.com)
      b. Tenant ID for your tenant (get 24-char hex value from tenant dashboard URL)
      c. Email & password for tenant user.  **Note:**  This user *must* have an API access role in the tenant.
 
