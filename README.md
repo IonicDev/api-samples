@@ -12,9 +12,9 @@ Follow these instructions to setup this file for use by the samples:
 
 1. Copy IonicAPI.cfg to a \.ionicsecurity sub-directory under your Windows or Linux user directory: `C:\Users\Joe\.ionicsecurity` or `~/.ionicsecurity`.
 2. Edit `IonicAPI.cfg` with your favorite text editor to have:
-     a. URL for tenant API calls (ex. https://api.ionic.com)
-     b. Tenant ID for your tenant (get 24-char hex value from tenant dashboard URL)
-     c. Email & password for tenant user.  **Note:**  This user *must* have an API access role in the tenant.
+     * a. URL for tenant API calls (ex. https://api.ionic.com)
+     * b. Tenant ID for your tenant (get 24-char hex value from tenant dashboard URL)
+     * c. Email & password for tenant user.  **Note:**  This user *must* have an API access role in the tenant.
 
 Contact Ionic Security for how to use "Organization CSA" user credentials for API calls to
 any tenant managed under the Organization Tenant.
